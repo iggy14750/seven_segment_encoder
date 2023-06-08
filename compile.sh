@@ -4,12 +4,22 @@
 # Compiling UVVM Util
 echo "Compiling UVVM Utility Library..."
 pwd
+ls -la
+ls -la /app
+ls -la UVVM
+cd UVVM
+mkdir test
+cd test
+ls -la
+bash ../script/compile_all.sh ghdl
+ls -laH
+#pwd
 #ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared hello.vhd
-ghdl -a hello.vhd
-echo "Done building"
-echo "Starting simulations..."
-ghdl -e hello_world
-ghdl -r hello_world
+#ghdl -a hello.vhd
+#echo "Done building"
+#echo "Starting simulations..."
+#ghdl -e hello_world
+#ghdl -r hello_world
 
 
 # ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared --work=uvvm_util ../../uvvm_util/src/adaptations_pkg.vhd
