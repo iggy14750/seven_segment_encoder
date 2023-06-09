@@ -11,8 +11,45 @@ cd UVVM
 mkdir test
 cd test
 ls -la
-bash ../script/compile_all.sh ghdl
-ls -laH
+
+# Refer to the base of UVVM
+UVVM_DIR=..
+export SIM=ghdl
+set -e -x
+
+bash $UVVM_DIR/script/compile_all.sh ghdl
+#bash ../bitvis_irqc/script/compile_all_and_simulate.sh ghdl
+
+source $UVVM_DIR/script/multisim.sh ghdl
+
+# Compiling UVVM Util
+echo "Compiling UVVM Utility Library..."
+compile_component $UVVM_DIR/uvvm_util
+
+# Compiling Bitvis VIP SBI BFM
+echo "Compiling Bitvis VIP SBI BFM..."
+compile bitvis_vip_sbi $UVVM_DIR/bitvis_vip_sbi/src/sbi_bfm_pkg.vhd
+
+# Compiling Bitvis IRQC
+echo "Compiling Bitvis IRQC..."
+compile_component $UVVM_DIR/bitvis_irqc
+
+# Compiling demo TB
+echo "Compiling IRQC demo TB..."
+compile bitvis_irqc $UVVM_DIR/bitvis_irqc/tb/irqc_demo_tb.vhd
+
+# Elaborate into an executable
+# simulate bitvis_irqc irqc_demo_tb
+# ( mkdir -p $_dir && cd $_dir && echo "${cmd}" && bash -c "$cmd" )
+cd ghdl
+pwd
+ls -la
+ghdl -e --work=bitvis_irqc --std=08 -frelaxed -fsynopsys irqc_demo_tb
+cd ..
+
+# Was the exe updated?
+ls -laH ghdl/irqc_demo_tb
+
 #pwd
 #ghdl -a --std=08 -frelaxed-rules -Wno-hide -Wno-shared hello.vhd
 #ghdl -a hello.vhd
