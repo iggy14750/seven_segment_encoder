@@ -6,7 +6,7 @@ _dir="$(dirname $(realpath $(dirname $0)))"
 echo $dir
 cd ghdl
 _sources=( \
-	$_dir/hdl/hello.vhd \
+	$_dir/hdl/seven_segment.vhd \
 	$_dir/sim/seven_segment_tb.vhd \
 )
 
