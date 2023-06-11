@@ -44,3 +44,8 @@ entity seven_segment is
 		seven_seg_G   : out std_logic
 	);
 end entity seven_segment;
+
+architecture rtl of seven_segment is
+begin
+end rtl;
+
