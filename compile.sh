@@ -28,6 +28,10 @@ compile_component $UVVM_DIR/uvvm_util
 
 echo "Compiling my Seven-Segment Encoder IP..."
 ../seven_segment/script/compile.sh
+
+# Link into an executable
+(cd ghdl; ghdl -e --std=08 -frelaxed -fsynopsys seven_segment_tb )
+
 # Compiling Bitvis VIP SBI BFM
 #echo "Compiling Bitvis VIP SBI BFM..."
 #compile bitvis_vip_sbi $UVVM_DIR/bitvis_vip_sbi/src/sbi_bfm_pkg.vhd

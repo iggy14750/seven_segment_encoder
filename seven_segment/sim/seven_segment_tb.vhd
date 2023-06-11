@@ -35,5 +35,11 @@ architecture tb of seven_segment_tb is
 		);
 	end component;
 begin
+
+	main: process
+	begin
+		report "Hello world from the testbench!";
+    		std.env.stop;
+	end process;
 end tb;
 
