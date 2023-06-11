@@ -52,13 +52,14 @@ architecture tb of seven_segment_tb is
 	-- Global Procedures and Functions
 	-------------------------------
 	-- I could have check_no_metavalue just constantly checking in the background
-	procedure check_no_metavalue
-	is
+	procedure check_no_metavalue(
+		sig            : in  std_logic_vector
+	) is
 		variable thisbit : std_logic := '0';
 		variable is_meta : boolean := false;
 	begin
-		for bitno in seven_seg_packed'range loop
-			thisbit := seven_seg_packed(bitno);
+		for bitno in sig'range loop
+			thisbit := sig(bitno);
 			-- The old assert method - deprecated
 			-- assert thisbit = '1' or thisbit = '0' severity failure;
 			-- New assert - from UVVM
@@ -93,7 +94,7 @@ begin
                 clock_ena <= true;                  -- to start clock generator
 
 		wait_num_rising_edge(clk, 4);
-		check_no_metavalue;
+		check_no_metavalue(seven_seg_packed);
 
 		-- Stop simulation
     		std.env.stop;
