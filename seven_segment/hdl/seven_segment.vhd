@@ -43,15 +43,23 @@ entity seven_segment is
 end entity seven_segment;
 
 architecture rtl of seven_segment is
+	signal hex_int : natural := 0;
 begin
+	hex_int <= to_integer(unsigned(hex_value));
 
-	seven_seg.A <= '0';
-	seven_seg.B <= '0';
-	seven_seg.C <= '0';
-	seven_seg.D <= '0';
-	seven_seg.E <= '0';
-	seven_seg.F <= '0';
-	seven_seg.G <= '0';
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			seven_seg <= SEVEN_SEGMENT_ENCODINGS(hex_int);
+			--seven_seg.A <= '0';
+			--seven_seg.B <= '0';
+			--seven_seg.C <= '0';
+			--seven_seg.D <= '0';
+			--seven_seg.E <= '0';
+			--seven_seg.F <= '0';
+			--seven_seg.G <= '0';
+		end if;
+	end process;
 
 end rtl;
 
