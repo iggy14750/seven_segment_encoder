@@ -29,6 +29,7 @@ architecture tb of seven_segment_tb is
 	-------------------------------
 	constant C_SCOPE              : string := C_TB_SCOPE_DEFAULT;
 	constant C_CLK_PERIOD         : time := 10 ns;
+	constant C_RANDOM_ATTEMPTS    : natural := 1000;
 	signal clock_ena              : boolean := false;
 	signal clk                    : std_logic := '0';
 	signal hex_value              : std_logic_vector(3 downto 0) := (others=>'0');
@@ -67,6 +68,7 @@ begin
 	-- Testbench Main Control Process
 	-------------------------------
 	main: process
+		variable int_val : integer := 0;
 	begin
 		report_global_ctrl(VOID);
 		report_msg_id_panel(VOID);
@@ -101,6 +103,29 @@ begin
 		end loop;
 
 		-- Randomized test
+		for i in 0 to C_RANDOM_ATTEMPTS-1 loop
+			hex_value <= random(hex_value'length);
+			int_val := to_integer(unsigned(hex_value));
+			wait_num_rising_edge(clk, 1);
+			-- assert value in range
+			check_value_in_range(int_val, 0, 15,
+				"Check random value is in spec. case: " & 
+				to_string(i) & " value: " & to_string(int_val) & 
+				" / " & to_string(hex_value)
+			);
+			int_val := to_integer(unsigned(hex_value));
+			check_value(
+				pack_seven_seg(seven_seg),
+				pack_seven_seg(SEVEN_SEGMENT_ENCODINGS(int_val)),
+				TB_ERROR,
+				"Check randomized seven segment case " & to_string(i)
+				& " input: " & to_string(hex_value)
+				& " input int: " & to_string(int_val)
+				& " output: " & to_string(pack_seven_seg(seven_seg))
+			);
+			report "num = " & to_string(int_val) & LF &
+				to_string(seven_seg);
+		end loop;
 
 		-- Report final counters and print conclusion for simulation (Success/Fail)
 		report_alert_counters(FINAL);
