@@ -8,6 +8,9 @@ use std.env.all;
 library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
+library work;
+use work.seven_segment_pkg.all;
+
 -------------------------------
 -- Seven-Segment Encoder
 --
@@ -35,13 +38,7 @@ entity seven_segment is
 	port (
 		clk           : in  std_logic;
 		hex_value     : in  std_logic_vector(3 downto 0);
-		seven_seg_A   : out std_logic;
-		seven_seg_B   : out std_logic;
-		seven_seg_C   : out std_logic;
-		seven_seg_D   : out std_logic;
-		seven_seg_E   : out std_logic;
-		seven_seg_F   : out std_logic;
-		seven_seg_G   : out std_logic
+		seven_seg     : out seven_seg_t
 	);
 end entity seven_segment;
 

@@ -8,6 +8,9 @@ use std.env.all;
 library uvvm_util;
 context uvvm_util.uvvm_util_context;
 
+library work;
+use work.seven_segment_pkg.all;
+
 entity seven_segment_tb is
 end entity seven_segment_tb;
 
@@ -22,23 +25,6 @@ end entity seven_segment_tb;
 -------------------------------
 architecture tb of seven_segment_tb is
 	-------------------------------
-	-- DUT Component
-	-------------------------------
-	component seven_segment is
-		port (
-			clk           : in  std_logic;
-			hex_value     : in  std_logic_vector(3 downto 0);
-			seven_seg_A   : out std_logic;
-			seven_seg_B   : out std_logic;
-			seven_seg_C   : out std_logic;
-			seven_seg_D   : out std_logic;
-			seven_seg_E   : out std_logic;
-			seven_seg_F   : out std_logic;
-			seven_seg_G   : out std_logic
-		);
-	end component;
-
-	-------------------------------
 	-- Constants and Signals
 	-------------------------------
 	constant C_SCOPE              : string := C_TB_SCOPE_DEFAULT;
@@ -46,7 +32,7 @@ architecture tb of seven_segment_tb is
 	signal clock_ena              : boolean := false;
 	signal clk                    : std_logic := '0';
 	signal hex_value              : std_logic_vector(3 downto 0) := (others=>'0');
-	signal seven_seg_packed       : std_logic_vector(6 downto 0) := (others=>'0');
+	signal seven_seg              : seven_seg_t;
 
 	-------------------------------
 	-- Global Procedures and Functions
@@ -75,12 +61,13 @@ begin
 	-------------------------------
 	-- Clock Generator
 	-------------------------------
-	clock_generator(clk, clock_ena, C_CLK_PERIOD, "IRQC TB clock");
+	clock_generator(clk, clock_ena, C_CLK_PERIOD, "Seven Seg TB clock");
 
 	-------------------------------
 	-- Testbench Main Control Process
 	-------------------------------
 	main: process
+		--function seven_seg_encode(
 	begin
 		report_global_ctrl(VOID);
 		report_msg_id_panel(VOID);
@@ -94,7 +81,15 @@ begin
                 clock_ena <= true;                  -- to start clock generator
 
 		wait_num_rising_edge(clk, 4);
-		check_no_metavalue(seven_seg_packed);
+
+		for num in 0 to 15 loop
+			report "num = " & to_string(num) & LF & 
+			to_string(SEVEN_SEGMENT_ENCODINGS(num)) & LF;
+		end loop;
+		check_no_metavalue(pack_seven_seg(seven_seg));
+		-- Assert that everything out of the encoder is always a valid seven-segment value
+		-- Directed table-driven test
+		-- Randomized test
 
 		-- Stop simulation
     		std.env.stop;
@@ -108,13 +103,7 @@ begin
 	port map (
 		clk           => clk,
 		hex_value     => hex_value,
-		seven_seg_A   => seven_seg_packed(0),
-		seven_seg_B   => seven_seg_packed(1),
-		seven_seg_C   => seven_seg_packed(2),
-		seven_seg_D   => seven_seg_packed(3),
-		seven_seg_E   => seven_seg_packed(4),
-		seven_seg_F   => seven_seg_packed(5),
-		seven_seg_G   => seven_seg_packed(6)
+		seven_seg     => seven_seg
 	);
 		
 end tb;
