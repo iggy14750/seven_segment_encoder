@@ -44,5 +44,14 @@ end entity seven_segment;
 
 architecture rtl of seven_segment is
 begin
+
+	seven_seg.A <= '0';
+	seven_seg.B <= '0';
+	seven_seg.C <= '0';
+	seven_seg.D <= '0';
+	seven_seg.E <= '0';
+	seven_seg.F <= '0';
+	seven_seg.G <= '0';
+
 end rtl;
 

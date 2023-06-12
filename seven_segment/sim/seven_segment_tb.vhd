@@ -67,10 +67,10 @@ begin
 	-- Testbench Main Control Process
 	-------------------------------
 	main: process
-		--function seven_seg_encode(
 	begin
 		report_global_ctrl(VOID);
 		report_msg_id_panel(VOID);
+		set_alert_stop_limit(TB_ERROR, 0);
 
 		enable_log_msg(ALL_MESSAGES);
 		--disable_log_msg(ALL_MESSAGES);
@@ -82,14 +82,29 @@ begin
 
 		wait_num_rising_edge(clk, 4);
 
-		for num in 0 to 15 loop
-			report "num = " & to_string(num) & LF & 
-			to_string(SEVEN_SEGMENT_ENCODINGS(num)) & LF;
+
+		-- TODO: Assert that everything out of the encoder is always a valid seven-segment value
+		-- Directed test
+		for i in 0 to 15 loop
+			hex_value <= std_logic_vector(to_unsigned(i, 4));
+			wait_num_rising_edge(clk, 1);
+			check_no_metavalue(pack_seven_seg(seven_seg));
+			check_value(
+				pack_seven_seg(seven_seg),
+				pack_seven_seg(SEVEN_SEGMENT_ENCODINGS(i)),
+				TB_ERROR,
+				"Check directed seven segment case " & to_string(i)
+			);
+			report "num = " & to_string(i) & LF &
+				-- to_string(SEVEN_SEGMENT_ENCODINGS(i)) & LF;
+				to_string(seven_seg);
 		end loop;
-		check_no_metavalue(pack_seven_seg(seven_seg));
-		-- Assert that everything out of the encoder is always a valid seven-segment value
-		-- Directed table-driven test
+
 		-- Randomized test
+
+		-- Report final counters and print conclusion for simulation (Success/Fail)
+		report_alert_counters(FINAL);
+		log(ID_LOG_HDR, "SIMULATION COMPLETED", C_SCOPE);
 
 		-- Stop simulation
     		std.env.stop;
