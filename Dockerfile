@@ -11,6 +11,6 @@ COPY . .
 #CMD ["node", "src/index.js"]
 #CMD ["bash", "UVVM/.github/workflows/test-ghdl.yml"]
 #CMD ["./UVVM/script/compile_all.sh", "ghdl"]
-CMD ["bash", "./compile.sh"]
+#CMD ["bash", "./compile.sh"]
 #EXPOSE 3000
 
